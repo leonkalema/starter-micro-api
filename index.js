@@ -1,13 +1,16 @@
 const express = require('express');
 const axios = require('axios');
-const cors = require('cors');
 
 const app = express();
 
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Add CORS middleware
+const cors = require('cors');
+app.use(cors());
+
+// Add route for generating workout and nutrition plans
 app.post('/generate-plan', async (req, res) => {
   try {
     // Extract data from form submission
@@ -24,7 +27,16 @@ app.post('/generate-plan', async (req, res) => {
       },
     });
 
-    // Generate workout plan based on user data and API response
+    // Make API call to nutrition API to retrieve nutrition information
+    const nutritionResponse = await axios.get('https://api.edamam.com/api/nutrition-data', {
+      params: {
+        app_id: '<YOUR_APP_ID>', // Replace with your own app ID
+        app_key: '<YOUR_APP_KEY>', // Replace with your own app key
+        ingr: `1 ${goal === 'loseWeight' ? 'bowl' : 'plate'} of ${workoutType === 'cardio' ? 'oatmeal' : 'chicken breast'}`, // Example of a nutrition query based on user inputs
+      },
+    });
+
+    // Generate workout and nutrition plans based on user data and API responses
     const workoutPlan = {
       age,
       gender,
@@ -37,15 +49,20 @@ app.post('/generate-plan', async (req, res) => {
       workoutDuration,
       exercises: exerciseResponse.data.results, // Include exercises from API response in workout plan
     };
+    const nutritionPlan = {
+      goal,
+      nutrition: nutritionResponse.data, // Include nutrition information from API response in nutrition plan
+    };
 
-    // Return workout plan as JSON response
-    res.json(workoutPlan);
+    // Return workout and nutrition plans as JSON response
+    res.json({ workoutPlan, nutritionPlan });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'An error occurred while generating the workout plan' });
+    res.status(500).json({ error: 'An error occurred while generating the workout and nutrition plans' });
   }
 });
 
+// Start server
 const server = app.listen(process.env.PORT || 3000, () => {
   console.log(`Server started on port ${server.address().port}`);
 });
