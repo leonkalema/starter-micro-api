@@ -10,6 +10,8 @@ app.use(express.urlencoded({ extended: true }));
 // Add CORS middleware
 const cors = require('cors');
 app.use(cors());
+app.options('*', cors());
+
 
 app.post('/generate-pdf', async (req, res) => {
     const { htmlContent, watermark } = req.body;
