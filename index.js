@@ -37,13 +37,7 @@ app.post('/generate-plan', async (req, res) => {
         },
       });
   
-      // Make API call to Wger API to retrieve diet plan (nutritionplan) data
-      const nutritionPlanResponse = await axios.get('https://wger.de/api/v2/nutritionplan/');
-  
-      // Extract diet plans
-      const dietPlans = nutritionPlanResponse.data.results;
-  
-      // Generate workout and nutrition plans based on user data and API responses
+      // Generate workout plan based on user data and API responses
       const workoutPlan = {
         age,
         gender,
@@ -57,16 +51,12 @@ app.post('/generate-plan', async (req, res) => {
         exercises: exerciseResponse.data.results,
         exerciseImages: exerciseImageResponse.data.results, // Include exercise images in the workout plan
       };
-      const nutritionPlan = {
-        goal,
-        dietPlans,
-      };
   
-      // Return workout and nutrition plans as JSON response
-      res.json({ workoutPlan, nutritionPlan });
+      // Return workout plan as JSON response
+      res.json({ workoutPlan });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'An error occurred while generating the workout and nutrition plans' });
+      res.status(500).json({ error: 'An error occurred while generating the workout plan' });
     }
   });
   
