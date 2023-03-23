@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const generatePDF = require('./generate-pdf');
+const generatePDF = require('./generate-pdf.js');
 
 const app = express();
 
@@ -23,6 +23,7 @@ app.post('/generate-pdf', async (req, res) => {
       res.status(500).json({ error: 'An error occurred while generating the PDF' });
     }
   });
+  
   
 
 // Add route for generating workout and nutrition plans
