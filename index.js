@@ -14,17 +14,22 @@ app.options('*', cors());
 
 
 app.post('/generate-pdf', async (req, res) => {
-    const { htmlContent, watermark } = req.body;
+    const { workoutPlan, watermark } = req.body;
   
     try {
-      const pdfBuffer = await generatePDF(htmlContent, watermark);
-      res.type('application/pdf');
+      const pdfBlob = await generatePDF(workoutPlan, watermark);
+      const pdfBuffer = Buffer.from(pdfBlob);
+  
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename=workout_plan.pdf');
+      res.setHeader('Content-Length', pdfBuffer.length);
       res.send(pdfBuffer);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'An error occurred while generating the PDF' });
     }
   });
+  
   
 // Add route for generating workout and nutrition plans
 app.post('/generate-plan', async (req, res) => {
