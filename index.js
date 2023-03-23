@@ -55,6 +55,29 @@ app.post('/generate-plan', async (req, res) => {
         exercises: exerciseResponse.data.results,
         exerciseImages: exerciseImageResponse.data.results,
       };
+
+      // Add basic assumptions
+const weightLossRate = 0.5; // kg per week
+const muscleGainRate = 0.25; // kg per week
+const weeksInAMonth = 4;
+
+// Set a default target change in kg (gain or loss)
+let targetChange = 5;
+
+// Calculate the estimated duration to achieve the goal
+let estimatedMonths;
+if (goal === "lose_weight") {
+  estimatedMonths = (targetChange / (weightLossRate * weeksInAMonth)).toFixed(1);
+} else if (goal === "gain_muscle") {
+  estimatedMonths = (targetChange / (muscleGainRate * weeksInAMonth)).toFixed(1);
+} else {
+  estimatedMonths = "N/A";
+}
+
+// Add estimated duration and potential gain or loss to the workout plan
+workoutPlan.estimatedDuration = estimatedMonths;
+workoutPlan.targetChange = targetChange;
+
   
       // Distribute exercises among the selected days
       const numExercisesPerDay = Math.ceil(workoutPlan.exercises.length / workoutDaysArray.length);
