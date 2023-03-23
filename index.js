@@ -1,5 +1,6 @@
 const express = require('express');
 const axios = require('axios');
+const generatePDF = require('./generate-pdf');
 
 const app = express();
 
@@ -9,6 +10,20 @@ app.use(express.urlencoded({ extended: true }));
 // Add CORS middleware
 const cors = require('cors');
 app.use(cors());
+
+app.post('/generate-pdf', async (req, res) => {
+    const { htmlContent, watermark } = req.body;
+  
+    try {
+      const pdfBuffer = await generatePDF(htmlContent, watermark);
+      res.type('application/pdf');
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'An error occurred while generating the PDF' });
+    }
+  });
+  
 
 // Add route for generating workout and nutrition plans
 app.post('/generate-plan', async (req, res) => {
