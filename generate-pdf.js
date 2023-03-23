@@ -1,4 +1,5 @@
-const jsPDF = require('jspdf');
+const jsPDF = require('jspdf').default;
+
 const autoTable = require('jspdf-autotable');
 
 
