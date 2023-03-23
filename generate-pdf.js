@@ -4,7 +4,11 @@ const autoTable = require('jspdf-autotable');
 async function generatePDF(workoutPlan, watermark) {
   const pdf = new jsPDF();
   pdf.setFontSize(10);
-  pdf.text(watermark, pdf.internal.pageSize.getWidth() - 20, pdf.internal.pageSize.getHeight() - 10);
+
+  // Check if the watermark parameter is a valid string
+  if (typeof watermark === 'string' && watermark.length > 0) {
+    pdf.text(watermark, pdf.internal.pageSize.getWidth() - 20, pdf.internal.pageSize.getHeight() - 10);
+  }
 
   const tableHeaders = ['Exercise', 'Reps', 'Sets', 'Rest'];
   const tableRows = [];
