@@ -1,8 +1,10 @@
 const jsPDF = require('jspdf');
-require('jspdf-autotable');
+const autoTable = require('jspdf-autotable');
+const pdf = new jsPDF();
+
 
 async function generatePDF(htmlContent, watermark) {
-  const pdf = new jsPDF();
+pdf.setFontSize(10);
   pdf.text(watermark, pdf.internal.pageSize.getWidth() - 20, pdf.internal.pageSize.getHeight() - 10);
   pdf.autoTable({
     html: htmlContent,
