@@ -1,25 +1,29 @@
-const puppeteer = require('puppeteer');
+const jsPDF = require('jspdf');
 
 async function generatePDF(htmlContent, watermark) {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.setContent(htmlContent);
+  // Create a new jsPDF instance
+  const doc = new jsPDF();
 
-  // Add watermark
-  await page.evaluate((watermark) => {
-    const watermarkDiv = document.createElement('div');
-    watermarkDiv.innerHTML = watermark;
-    watermarkDiv.style.position = 'fixed';
-    watermarkDiv.style.bottom = '10px';
-    watermarkDiv.style.right = '10px';
-    watermarkDiv.style.opacity = '0.5';
-    watermarkDiv.style.zIndex = '1000';
-    document.body.appendChild(watermarkDiv);
-  }, watermark);
+  // Add watermark to the document
+  doc.setFontSize(12);
+  doc.setTextColor(150);
+  doc.text(watermark, doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 10, null, null, 'right');
 
-  const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
+  // Add HTML content to the document
+  const source = htmlContent;
+  const margins = {
+    top: 20,
+    bottom: 20,
+    left: 20,
+    width: 522,
+  };
+  doc.fromHTML(source, margins.left, margins.top, {
+    width: margins.width,
+  });
 
-  await browser.close();
+  // Generate the PDF buffer
+  const pdfBuffer = doc.output('arraybuffer');
+
   return pdfBuffer;
 }
 
