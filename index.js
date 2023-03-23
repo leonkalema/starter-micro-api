@@ -24,8 +24,6 @@ app.post('/generate-pdf', async (req, res) => {
     }
   });
   
-  
-
 // Add route for generating workout and nutrition plans
 app.post('/generate-plan', async (req, res) => {
     try {
