@@ -2,6 +2,11 @@ const jsPDF = require('jspdf').default;
 const autoTable = require('jspdf-autotable');
 
 async function generatePDF(workoutPlan = [], watermark) {
+
+    if (!Array.isArray(workoutPlan)) {
+        throw new Error('Invalid workoutPlan parameter. Expected an array.');
+      }
+      
   const pdf = new jsPDF();
   pdf.setFontSize(10);
 

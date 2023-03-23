@@ -1,10 +1,12 @@
 const express = require('express');
 const axios = require('axios');
 const generatePDF = require('./generate-pdf.js');
+const generatesPDF = require('./makepdf.js');
+const pdfMake = require('pdfmake');
 
 const app = express();
 
-app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
 
 // Add CORS middleware
@@ -12,6 +14,25 @@ const cors = require('cors');
 app.use(cors());
 app.options('*', cors());
 
+app.use(express.json());
+
+app.post('/generates-pdf', async (req, res) => {
+    const { workoutPlan, watermark } = req.body;
+  
+    try {
+      // Generate PDF document using pdfmake
+      const pdfBuffer = await generatePDF(workoutPlan, watermark);
+  
+      // Set response headers and send PDF buffer
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename=workout_plan.pdf');
+      res.setHeader('Content-Length', pdfBuffer.length);
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'An error occurred while generating the PDF' });
+    }
+  });
 
 app.post('/generate-pdf', async (req, res) => {
     const { workoutPlan, watermark } = req.body;
