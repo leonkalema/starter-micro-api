@@ -1,7 +1,7 @@
 const jsPDF = require('jspdf').default;
 const autoTable = require('jspdf-autotable');
 
-async function generatePDF(workoutPlan, watermark) {
+async function generatePDF(workoutPlan = [], watermark) {
   const pdf = new jsPDF();
   pdf.setFontSize(10);
 
